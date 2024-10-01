@@ -1,0 +1,1 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/aw8h948tgkv0vyv5?svg=true)](https://ci.appveyor.com/project/Kateshenyang/dnd)

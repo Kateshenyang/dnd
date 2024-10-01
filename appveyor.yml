@@ -1,0 +1,41 @@
+# Указание окружения и стека
+image: Ubuntu2204
+stack: node 20
+
+# Ветки, на которых будет запускаться сборка
+branches:
+  only:
+    - master
+    - main
+
+# Кэширование node_modules для ускорения сборки
+cache: 
+  - node_modules
+
+# Установка зависимостей
+install:
+  - yarn install
+  - yarn add wait-on
+  - yarn add puppeteer@latest
+  - npx puppeteer install # Загрузка браузера для Puppeteer
+
+# Отключение автоматической сборки
+build: off
+
+# Скрипты сборки
+build_script:
+  - chmod +x node_modules/.bin/webpack
+  - yarn build
+
+# Тестирование и линтинг
+test_script:
+  - yarn start & # Запуск сервера в фоновом режиме
+  - npx wait-on http://localhost:9000 # Ожидание запуска сервера
+
+# Скрипты деплоя
+deploy_script:
+  - git config --global credential.helper store
+  - git config --global user.name "AppVeyor"
+  - git config --global user.email "ci@appveyor.com"
+  - echo "https://$GITHUB_TOKEN:x-oauth-basic@github.com" > "$HOME/.git-credentials"
+  - npx gh-pages -d dist -u "appveyor-bot <ci@appveyor>" -r "https://$GITHUB_TOKEN@github.com/Kateshenyang/dnd.git"
